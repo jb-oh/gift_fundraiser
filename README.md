@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 생일 선물 펀딩 시스템 PRD
 
-## Getting Started
+## 1. 개요 (Overview)
 
-First, run the development server:
+### 1.1 목적 (Goal)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+-   사용자가 친구·가족·지인에게 생일 선물을 위해 쉽게 펀딩을 받고,
+    투명하게 금액을 관리하며, 최종 선물을 선택·구매할 수 있는 플랫폼을
+    제공한다.
+-   기존의 송금 기반 축하 문화의 불편함을 제거하고, 목표 기반 펀딩을
+    통해 UX의 품질을 높인다.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1.2 문제 정의 (Problem Statement)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-   여러 사람에게 금액을 모으는 과정이 비효율적이며 투명성이 부족함.
+-   선물 선택 시 예산 조율과 그룹 의견 수렴이 어려움.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1.3 성공 지표 (Success Metrics)
 
-## Learn More
+  카테고리|지표
+  ---|---
+  Engagement|펀딩 생성 수, 참여자 수
+  Conversion|목표 금액 달성률, 결제 완료율
+  UX|펀딩 생성까지 평균 소요 시간, CS 발생률
+  Business|결제 처리 수수료 수익, 추천 선물 구매율
 
-To learn more about Next.js, take a look at the following resources:
+## 2. 사용자 (Users)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2.1 페르소나(Personas)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **생일 주인 (Host)**\
+2.  **펀딩 참여자 (Contributor)**\
+3.  **기획자/선물 추천자 (Organizer)**
 
-## Deploy on Vercel
+## 3. 핵심 기능 요약 (Key Features)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+  기능 영역|기능명|설명
+  ---|---|---
+  펀딩 생성|목표 설정|목표 금액/기간/선물 후보 선택
+  펀딩 공유|링크 공유|카카오톡/메신저 공유
+  결제|기여 결제|카드·계좌·페이 결제
+  메시지|축하 메시지|메시지 카드 기록
+  대시보드|실시간 현황|총 모금액/참여자/기간
+  선물 관리|구매|목표 도달 시 선물 선택
+  투명성|참여 내역 공개 옵션|익명/기명, 금액 공개 설정
+  알림|푸시/카톡 알림|진행 상황 자동 알림
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 4. 사용자 흐름 (User Flow)
+
+### 4.1 Host Flow
+
+1.  펀딩 생성
+2.  목표 및 선물 입력
+3.  링크 공유
+4.  실시간 현황 모니터링
+5.  목표 도달 시 선물 구매
+
+### 4.2 Contributor Flow
+
+1.  링크 클릭
+2.  소개 및 선물 정보 확인
+3.  금액 입력 → 결제
+4.  축하 메시지 작성
+
+## 5. 상세 기능 요구사항 (Detailed Requirements)
+
+### 5.1 펀딩 생성
+
+-   목표 금액, 기간, 선물 후보 입력
+-   커버 이미지 설정
+
+### 5.2 결제
+
+-   다양한 결제 수단 지원
+-   목표 미달 시 환불 옵션 또는 금액 전달 선택 가능
+
+### 5.3 대시보드
+
+-   실시간 참여 현황, 메시지 카드, 금액 표시
+-   초대 리마인드 기능
+
+### 5.4 투명성 옵션
+
+  항목|옵션
+  ---|---
+  금액 공개|공개/비공개
+  참여자 이름|기명/익명
+  목표 공개|보이기/숨기기
+
+### 5.5 메시지 카드
+
+-   템플릿 제공
+-   PDF/Webbook로 다운로드 가능
+
+### 5.6 알림 시스템
+
+-   참여 발생, 마감 임박, 목표 달성, 선물 구매 등 알림
+
+## 6. UX/UI 요구사항
+
+-   단일 페이지 기반 간단한 참여 UX
+-   감정적 가치 강조
+-   모바일 최적화 필수
+
+## 7. 비기능 요구사항 (NFR)
+
+-   페이지 2초 내 로딩
+-   실시간 업데이트 지연 ≤ 1초
+-   결제 보안 및 데이터 보호
+
+## 8. 향후 확장 기능 (Backlog)
+
+-   AI 기반 선물 추천
+-   선물 투표 기능
+-   실물 메시지 카드 제작 서비스
+-   자동 기념일 관리 기능
