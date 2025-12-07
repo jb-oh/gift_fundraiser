@@ -114,3 +114,28 @@
 -   선물 투표 기능
 -   실물 메시지 카드 제작 서비스
 -   자동 기념일 관리 기능
+
+## 9. 배포 (Deployment)
+
+이 프로젝트는 GitHub Pages를 통해 배포됩니다.
+
+### GitHub Pages 설정
+
+1. GitHub 저장소의 **Settings** → **Pages**로 이동
+2. **Source**에서 **GitHub Actions**를 선택
+3. `main` 브랜치에 푸시하면 자동으로 빌드 및 배포됩니다
+
+### 로컬 개발
+
+```bash
+npm install
+npm run dev
+```
+
+### 빌드
+
+```bash
+npm run build
+```
+
+빌드된 정적 파일은 `out` 디렉토리에 생성됩니다.
