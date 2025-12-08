@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    /**
+     * GitHub Pages SPA redirect handler
+     *
+     * This script enables client-side routing on GitHub Pages by redirecting
+     * 404 errors back to index.html with the path preserved as a query parameter.
+     *
+     * How it works:
+     * 1. User navigates to /gift_fundraiser/funding/abc123/
+     * 2. GitHub Pages can't find that file, serves this 404.html
+     * 3. This script redirects to /gift_fundraiser/?p=/funding/abc123/
+     * 4. index.html loads and the Next.js router handles the path
+     */
+
+    (function() {
+      var pathSegmentsToKeep = 1; // For /gift_fundraiser/ basePath
+
+      var l = window.location;
+      var path = l.pathname
+        .split('/')
+        .slice(0, 1 + pathSegmentsToKeep)
+        .join('/') + '/';
+
+      // Store the path (everything after basePath) in sessionStorage
+      var route = l.pathname.slice(path.length - 1);
+
+      // Redirect to index.html with the route preserved
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        path + '?p=' + encodeURIComponent(route) +
+        (l.search ? '&' + l.search.slice(1) : '') +
+        l.hash
+      );
+    })();
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>

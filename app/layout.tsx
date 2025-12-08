@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { RoleProvider } from "@/contexts/RoleContext";
 import Navigation from "@/components/Navigation";
+import SpaRedirectHandler from "@/components/SpaRedirectHandler";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <SpaRedirectHandler />
         <AuthProvider>
           <RoleProvider>
             <Navigation />
