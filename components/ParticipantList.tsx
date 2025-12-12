@@ -46,3 +46,6 @@ export default function ParticipantList({ funding, contributions }: ParticipantL
 
 
 
+
+
+

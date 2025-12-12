@@ -206,13 +206,23 @@ function LoggedInHome() {
 
   useEffect(() => {
     if (user) {
-      const hosted = getFundingsByHost(user.id);
-      const participated = getFundingsByContributor(user.email);
-      const all = getAllFundings();
+      const fetchData = async () => {
+        try {
+          const [hosted, participated, all] = await Promise.all([
+            getFundingsByHost(user.id),
+            getFundingsByContributor(user.email),
+            getAllFundings()
+          ]);
 
-      setHostedFundings(hosted.slice(0, 3));
-      setParticipatedFundings(participated.slice(0, 3));
-      setRecentFundings(all.slice(0, 6));
+          setHostedFundings(hosted.slice(0, 3));
+          setParticipatedFundings(participated.slice(0, 3));
+          setRecentFundings(all.slice(0, 6));
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+        }
+      };
+
+      fetchData();
     }
   }, [user]);
 

@@ -25,11 +25,13 @@ export default function AuthPage() {
     try {
       if (mode === 'login') {
         await login(formData.email);
+        alert('Check your email for the login link!');
       } else {
         // All users are 'host' by default (can do both host and participate)
         await signup(formData.name, formData.email, 'host');
+        alert('Check your email to complete your registration!');
       }
-      router.push('/');
+      // router.push('/'); // Don't redirect immediately
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

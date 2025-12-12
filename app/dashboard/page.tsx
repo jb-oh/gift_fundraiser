@@ -18,13 +18,21 @@ function DashboardContent() {
 
   useEffect(() => {
     if (user) {
-      // Load hosted fundings
-      const hosted = getFundingsByHost(user.id);
-      setHostedFundings(hosted);
+      const fetchData = async () => {
+        try {
+          // Load hosted fundings
+          const hosted = await getFundingsByHost(user.id);
+          setHostedFundings(hosted);
 
-      // Load participated fundings
-      const participated = getFundingsByContributor(user.email);
-      setParticipatedFundings(participated);
+          // Load participated fundings
+          const participated = await getFundingsByContributor(user.email);
+          setParticipatedFundings(participated);
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+        }
+      };
+
+      fetchData();
     }
   }, [user]);
 

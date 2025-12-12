@@ -8,8 +8,9 @@ export async function generateStaticParams(): Promise<Array<{ id: string }>> {
   return [{ id: 'placeholder' }];
 }
 
-export default function FundingPage({ params }: { params: { id: string } }) {
-  return <FundingClient fundingId={params.id} />;
+export default async function FundingPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <FundingClient fundingId={id} />;
 }
 
 

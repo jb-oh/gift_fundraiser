@@ -87,7 +87,7 @@ function CreateFundingContent() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
       !formData.hostName ||
       !formData.title ||
@@ -127,8 +127,13 @@ function CreateFundingContent() {
       status: 'active',
     };
 
-    saveFunding(funding);
-    router.push(`/dashboard/${funding.id}`);
+    try {
+      await saveFunding(funding);
+      router.push(`/dashboard/${funding.id}`);
+    } catch (error) {
+      console.error('Error saving funding:', error);
+      alert('펀딩 저장 중 오류가 발생했습니다.');
+    }
   };
 
   const nextStep = () => {
@@ -163,19 +168,17 @@ function CreateFundingContent() {
             {[1, 2, 3, 4].map((s) => (
               <div key={s} className="flex items-center">
                 <div
-                  className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                    step >= s
-                      ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white'
-                      : 'bg-gray-200 text-gray-600'
-                  }`}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full ${step >= s
+                    ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white'
+                    : 'bg-gray-200 text-gray-600'
+                    }`}
                 >
                   {s}
                 </div>
                 {s < 4 && (
                   <div
-                    className={`h-1 w-16 ${
-                      step > s ? 'bg-gradient-to-r from-pink-500 to-rose-500' : 'bg-gray-200'
-                    }`}
+                    className={`h-1 w-16 ${step > s ? 'bg-gradient-to-r from-pink-500 to-rose-500' : 'bg-gray-200'
+                      }`}
                   />
                 )}
               </div>
@@ -468,6 +471,9 @@ export default function CreateFundingPage() {
     </ProtectedRoute>
   );
 }
+
+
+
 
 
 

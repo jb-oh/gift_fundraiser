@@ -1,8 +1,10 @@
 'use client';
 
+// ... imports
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, UserType } from '@/lib/types';
-import { getCurrentUser, login as loginUser, logout as logoutUser, signup as signupUser } from '@/lib/auth';
+import { getCurrentUser, login as loginSupabase, logout as logoutSupabase, signup as signupSupabase } from '@/lib/auth';
+import { supabase } from '@/lib/supabase';
 
 interface AuthContextType {
   user: User | null;
@@ -20,33 +22,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load current user from localStorage on mount
-    const currentUser = getCurrentUser();
-    setUser(currentUser);
-    setIsLoading(false);
+    // Check active session
+    const initAuth = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Error loading user:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        // We need to map the user again or fetch it
+        // Re-using getCurrentUser logic roughly
+        const mappedUser: User = {
+          id: session.user.id,
+          email: session.user.email!,
+          name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
+          userType: session.user.user_metadata?.userType || 'user',
+          createdAt: session.user.created_at,
+        };
+        setUser(mappedUser);
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string) => {
-    try {
-      const loggedInUser = loginUser(email);
-      setUser(loggedInUser);
-    } catch (error) {
-      throw error;
-    }
+    await loginSupabase(email);
+    // Do NOT set user here; waiting for email link click
   };
 
   const signup = async (name: string, email: string, userType: UserType) => {
-    try {
-      const newUser = signupUser(name, email, userType);
-      setUser(newUser);
-    } catch (error) {
-      throw error;
-    }
+    await signupSupabase(name, email, userType);
+    // Do NOT set user here; waiting for email link click
   };
 
-  const logout = () => {
-    logoutUser();
-    setUser(null);
+  const logout = async () => {
+    await logoutSupabase();
+    setUser(null); // Optimistic update
   };
 
   const value: AuthContextType = {

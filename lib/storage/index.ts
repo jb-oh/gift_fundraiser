@@ -14,10 +14,10 @@
  *   export const storage = supabaseStorage;
  */
 
-import { localStorageImpl } from './localStorage';
+import { supabaseStorage } from './supabase';
 
 // Export the current storage implementation
-export const storage = localStorageImpl;
+export const storage = supabaseStorage;
 
 // Re-export the interface for type checking
 export type { IStorage } from './interface';

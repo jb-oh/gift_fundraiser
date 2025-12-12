@@ -24,21 +24,28 @@ export function FundingProvider({
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const refreshFunding = useCallback(() => {
-    const fundingData = getFunding(fundingId);
-    const contributionsData = getContributions(fundingId);
-    
-    setFunding(fundingData);
-    setContributions(contributionsData);
-    setLoading(false);
+  const refreshFunding = useCallback(async () => {
+    try {
+      const [fundingData, contributionsData] = await Promise.all([
+        getFunding(fundingId),
+        getContributions(fundingId)
+      ]);
+
+      setFunding(fundingData);
+      setContributions(contributionsData);
+    } catch (error) {
+      console.error('Error refreshing funding data:', error);
+    } finally {
+      setLoading(false);
+    }
   }, [fundingId]);
 
   useEffect(() => {
     refreshFunding();
-    
+
     // Poll for updates every 2 seconds
     const interval = setInterval(refreshFunding, 2000);
-    
+
     return () => clearInterval(interval);
   }, [refreshFunding]);
 
@@ -56,6 +63,9 @@ export function useFunding() {
   }
   return context;
 }
+
+
+
 
 
 
