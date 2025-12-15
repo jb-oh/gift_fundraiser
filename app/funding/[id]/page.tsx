@@ -1,12 +1,11 @@
 import FundingClient from './FundingClient';
 
 // Required for static export with dynamic routes
-export async function generateStaticParams(): Promise<Array<{ id: string }>> {
-  // Since funding IDs are stored in localStorage (client-side),
-  // we can't know them at build time. Return a placeholder and handle routing client-side.
-  // The actual routing will work client-side via Next.js router.
+export async function generateStaticParams() {
   return [{ id: 'placeholder' }];
 }
+
+export const dynamicParams = process.env.NODE_ENV === 'production' ? false : true;
 
 export default async function FundingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
