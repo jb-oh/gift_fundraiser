@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { differenceInDays } from 'date-fns';
 import { useAuth } from '@/contexts/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { getFullUrl } from '@/lib/env';
 
 function DashboardContent() {
   const { funding, contributions, loading, refreshFunding } = useFunding();
@@ -36,9 +37,7 @@ function DashboardContent() {
 
   const handleCopyLink = async () => {
     if (!funding) return;
-    const url = typeof window !== 'undefined' 
-      ? `${window.location.origin}/funding/${funding.id}` 
-      : '';
+    const url = getFullUrl(`/funding/${funding.id}`);
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -85,9 +84,7 @@ function DashboardContent() {
 
   const isGoalReached = funding.currentAmount >= funding.targetAmount;
   const daysRemaining = differenceInDays(new Date(funding.deadline), new Date());
-  const shareUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/funding/${funding.id}` 
-    : '';
+  const shareUrl = getFullUrl(`/funding/${funding.id}`);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">

@@ -31,10 +31,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Build for Production
+        run: npm run build:prod
         env:
           NODE_ENV: production
+          NEXT_PUBLIC_BASE_URL: https://jb-oh.github.io/gift_fundraiser
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 

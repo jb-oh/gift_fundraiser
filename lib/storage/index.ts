@@ -1,23 +1,17 @@
 /**
  * Storage abstraction layer
  *
- * Current implementation: localStorage (client-side only)
+ * Smart storage automatically selects the best storage backend:
+ * - Uses Supabase when configured with environment variables
+ * - Falls back to localStorage when Supabase is not configured
  *
- * To migrate to Supabase or another cloud database:
- * 1. Create a new file: lib/storage/supabase.ts
- * 2. Implement the IStorage interface
- * 3. Update the import below to use the new implementation
- * 4. Update any synchronous calls to handle async/await if needed
- *
- * Example migration:
- *   import { supabaseStorage } from './supabase';
- *   export const storage = supabaseStorage;
+ * This allows the app to work seamlessly in both environments without code changes.
  */
 
-import { supabaseStorage } from './supabase';
+import { smartStorage } from './smartStorage';
 
-// Export the current storage implementation
-export const storage = supabaseStorage;
+// Export the smart storage implementation
+export const storage = smartStorage;
 
 // Re-export the interface for type checking
 export type { IStorage } from './interface';

@@ -9,6 +9,7 @@ import GiftSelector from '@/components/GiftSelector';
 import ShareButton from '@/components/ShareButton';
 import { FiArrowLeft } from 'react-icons/fi';
 import Link from 'next/link';
+import { getFullUrl } from '@/lib/env';
 
 function FundingContent() {
   const { funding, contributions, loading, refreshFunding } = useFunding();
@@ -48,7 +49,7 @@ function FundingContent() {
     );
   }
 
-  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/funding/${funding.id}` : '';
+  const shareUrl = getFullUrl(`/funding/${funding.id}`);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50">

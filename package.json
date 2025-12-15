@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && npm run postbuild",
+    "dev": "NODE_ENV=development next dev",
+    "build": "npm run build:prod",
+    "build:dev": "NODE_ENV=development next build && npm run postbuild",
+    "build:prod": "NODE_ENV=production next build && npm run postbuild",
     "postbuild": "cp public/404.html out/404.html",
     "start": "next start",
     "lint": "eslint"
