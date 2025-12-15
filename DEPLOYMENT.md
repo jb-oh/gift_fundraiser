@@ -98,6 +98,35 @@ npm run build:prod
 
 This will create an `out` directory with static files ready for deployment.
 
+### Testing Production Build Locally
+
+**Important**: You cannot fully test the production build locally with a simple static server because:
+1. The production build uses `/gift_fundraiser` as the base path
+2. Dynamic routes require GitHub Pages' redirect mechanism
+3. Local servers don't replicate this environment
+
+**Options for testing**:
+
+1. **Use development mode for local testing** (Recommended):
+   ```bash
+   npm run dev
+   ```
+   This gives you the full experience without base path complications.
+
+2. **Preview the static files** (Limited testing):
+   ```bash
+   npm run preview
+   ```
+   Opens the build at `http://localhost:3000`, but:
+   - Home page will work
+   - Dynamic routes (e.g., `/funding/123`) will show 404
+   - This is expected and will work correctly on GitHub Pages
+
+3. **Best approach**: Deploy to GitHub Pages and test there
+   - The actual deployment is the only true test
+   - GitHub Pages handles the base path and redirects correctly
+   - If build succeeds, deployment will work
+
 ## Environment Variables Reference
 
 | Variable | Required | Description | Default (Dev) | Default (Prod) |

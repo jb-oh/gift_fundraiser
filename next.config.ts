@@ -16,11 +16,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
 
-  // Ignore ESLint errors during builds
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-
   // Environment variables available to the browser
   env: {
     NEXT_PUBLIC_BASE_URL: isProd
