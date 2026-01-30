@@ -16,6 +16,7 @@ export interface GiftCandidate {
 export interface Contribution {
   id: string;
   fundingId: string;
+  contributorId?: string;  // Track authenticated contributor's user ID
   contributorName: string;
   amount: number;
   message: string;

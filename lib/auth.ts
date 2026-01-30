@@ -1,5 +1,6 @@
-import { supabase } from './supabase';
+import { getSupabaseClient, isSupabaseConfigured } from './supabase';
 import { User, UserType } from './types';
+import { getBaseUrl } from './env';
 
 // Map Supabase user to our User type
 function mapSupabaseUser(u: any): User | null {
@@ -13,8 +14,13 @@ function mapSupabaseUser(u: any): User | null {
   };
 }
 
-// Signup with Magic Link (same as login in Supabase, but adding metadata)
+/**
+ * Signup with Magic Link
+ * Throws if Supabase is not configured
+ */
 export async function signup(name: string, email: string, userType: UserType): Promise<void> {
+  const supabase = getSupabaseClient();
+
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
@@ -22,6 +28,7 @@ export async function signup(name: string, email: string, userType: UserType): P
         name,
         userType,
       },
+      emailRedirectTo: `${getBaseUrl()}/auth/callback`,
     },
   });
 
@@ -30,10 +37,18 @@ export async function signup(name: string, email: string, userType: UserType): P
   }
 }
 
-// Login with Magic Link
+/**
+ * Login with Magic Link
+ * Throws if Supabase is not configured
+ */
 export async function login(email: string): Promise<void> {
+  const supabase = getSupabaseClient();
+
   const { error } = await supabase.auth.signInWithOtp({
     email,
+    options: {
+      emailRedirectTo: `${getBaseUrl()}/auth/callback`,
+    },
   });
 
   if (error) {
@@ -41,20 +56,30 @@ export async function login(email: string): Promise<void> {
   }
 }
 
-// Logout
+/**
+ * Logout current user
+ * Throws if Supabase is not configured
+ */
 export async function logout(): Promise<void> {
+  const supabase = getSupabaseClient();
   const { error } = await supabase.auth.signOut();
   if (error) {
     console.error('Error logging out:', error);
   }
 }
 
-// Get current user (async)
+/**
+ * Get current authenticated user
+ * Returns null if not authenticated OR if Supabase is not configured
+ */
 export async function getCurrentUser(): Promise<User | null> {
+  // Gracefully return null if Supabase isn't configured
+  if (!isSupabaseConfigured) {
+    return null;
+  }
+
+  const supabase = getSupabaseClient();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) return null;
   return mapSupabaseUser(user);
 }
-
-// Helper to get session user synchronously? No, Supabase is async.
-// We remove the synchronous exports and strict dependency on localStorage.

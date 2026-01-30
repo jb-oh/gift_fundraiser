@@ -56,7 +56,8 @@ class LocalStorage implements IStorage {
     }
   }
 
-  addContribution(contribution: Contribution): void {
+  addContribution(contribution: Contribution, _userId?: string): void {
+    // userId is ignored in localStorage mode - we don't track contributor IDs locally
     try {
       const contributions = this.getAllContributions();
       contributions.push(contribution);

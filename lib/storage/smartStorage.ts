@@ -29,8 +29,8 @@ class SmartStorageAdapter implements IStorage {
     return this.storage.getAllFundings();
   }
 
-  async addContribution(contribution: Parameters<IStorage['addContribution']>[0]): Promise<void> {
-    return this.storage.addContribution(contribution);
+  async addContribution(contribution: Parameters<IStorage['addContribution']>[0], userId?: string): Promise<void> {
+    return this.storage.addContribution(contribution, userId);
   }
 
   async getContributions(fundingId: string): Promise<Awaited<ReturnType<IStorage['getContributions']>>> {
