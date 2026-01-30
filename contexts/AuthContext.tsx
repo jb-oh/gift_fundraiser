@@ -1,10 +1,9 @@
 'use client';
 
-// ... imports
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, UserType } from '@/lib/types';
 import { getCurrentUser, login as loginSupabase, logout as logoutSupabase, signup as signupSupabase } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 interface AuthContextType {
   user: User | null;
@@ -36,11 +35,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     initAuth();
 
-    // Listen for auth changes
+    // Listen for auth changes only if Supabase is configured
+    if (!isSupabaseConfigured || !supabase) {
+      // No auth subscription in localStorage mode
+      return;
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
-        // We need to map the user again or fetch it
-        // Re-using getCurrentUser logic roughly
         const mappedUser: User = {
           id: session.user.id,
           email: session.user.email!,

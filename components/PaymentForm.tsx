@@ -72,7 +72,7 @@ export default function PaymentForm({ fundingId, onSuccess }: PaymentFormProps) 
         return;
       }
 
-      // Add contribution
+      // Add contribution (pass user ID for tracking)
       addContribution({
         id: generateId(),
         fundingId,
@@ -82,7 +82,7 @@ export default function PaymentForm({ fundingId, onSuccess }: PaymentFormProps) 
         isAnonymous,
         timestamp: new Date().toISOString(),
         paymentMethod,
-      });
+      }, user?.id);
 
       // Refresh funding data
       refreshFunding();

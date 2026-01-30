@@ -54,3 +54,12 @@ export function getFullUrl(path: string): string {
 export function getBasePath(): string {
   return ENV.isProduction ? `/${ENV.repoName}` : '';
 }
+
+/**
+ * Get the base URL for the application
+ * Used for auth redirects and sharing links
+ * @returns The base URL (e.g., https://jb-oh.github.io/gift_fundraiser)
+ */
+export function getBaseUrl(): string {
+  return ENV.baseUrl;
+}

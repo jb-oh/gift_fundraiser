@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { Funding, Contribution } from '../types';
 import { IStorage } from './interface';
 
@@ -48,6 +48,7 @@ function mapContributionFromDB(db: any): Contribution {
   return {
     id: db.id,
     fundingId: db.funding_id,
+    contributorId: db.contributor_id || undefined,
     contributorName: db.contributor_name,
     amount: Number(db.amount),
     message: db.message,
@@ -57,10 +58,11 @@ function mapContributionFromDB(db: any): Contribution {
   };
 }
 
-function mapContributionToDB(contribution: Contribution) {
+function mapContributionToDB(contribution: Contribution, contributorId?: string) {
   return {
     id: contribution.id,
     funding_id: contribution.fundingId,
+    contributor_id: contributorId || null,
     contributor_name: contribution.contributorName,
     amount: contribution.amount,
     message: contribution.message,
@@ -79,7 +81,7 @@ class SupabaseStorage implements IStorage {
 
   async saveFunding(funding: Funding): Promise<void> {
     const dbPayload = mapFundingToDB(funding);
-    const { error } = await supabase
+    const { error } = await getSupabaseClient()
       .from('fundings')
       .upsert(dbPayload);
 
@@ -87,7 +89,7 @@ class SupabaseStorage implements IStorage {
   }
 
   async getFunding(id: string): Promise<Funding | null> {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from('fundings')
       .select('*')
       .eq('id', id)
@@ -98,7 +100,7 @@ class SupabaseStorage implements IStorage {
   }
 
   async getAllFundings(): Promise<Funding[]> {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from('fundings')
       .select('*')
       .order('created_at', { ascending: false });
@@ -107,25 +109,25 @@ class SupabaseStorage implements IStorage {
     return (data || []).map(mapFundingFromDB);
   }
 
-  async addContribution(contribution: Contribution): Promise<void> {
-    const dbPayload = mapContributionToDB(contribution);
-    const { error } = await supabase
+  async addContribution(contribution: Contribution, userId?: string): Promise<void> {
+    const dbPayload = mapContributionToDB(contribution, userId);
+    const { error } = await getSupabaseClient()
       .from('contributions')
       .insert(dbPayload);
 
     if (error) throw new Error(`Failed to add contribution: ${error.message}`);
 
-    // Update funding current amount
-    const { error: updateError } = await supabase.rpc('increment_funding_amount', {
-      funding_id: contribution.fundingId,
-      amount_to_add: contribution.amount
+    // Update funding current amount via secure RPC
+    const { error: updateError } = await getSupabaseClient().rpc('increment_funding_amount', {
+      p_funding_id: contribution.fundingId,
+      p_amount_to_add: contribution.amount
     });
 
     if (updateError) throw new Error(`Failed to update funding: ${updateError.message}`);
   }
 
   async getContributions(fundingId: string): Promise<Contribution[]> {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from('contributions')
       .select('*')
       .eq('funding_id', fundingId)
@@ -136,7 +138,7 @@ class SupabaseStorage implements IStorage {
   }
 
   async getFundingsByHost(hostId: string): Promise<Funding[]> {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabaseClient()
       .from('fundings')
       .select('*')
       .eq('host_id', hostId)
@@ -146,17 +148,15 @@ class SupabaseStorage implements IStorage {
     return (data || []).map(mapFundingFromDB);
   }
 
-  async getFundingsByContributor(contributorEmail: string): Promise<{ funding: Funding; contribution: Contribution }[]> {
-    // 1. Search contributions by email (name)
-    // Note: contributor_name stores email in some contexts? Or just name?
-    // The previous code searched by name using email. This is fragile but we keep logic consistent.
-    const { data: contributions, error } = await supabase
+  async getFundingsByContributor(userId: string): Promise<{ funding: Funding; contribution: Contribution }[]> {
+    // Search by contributor_id for reliable lookups
+    const { data: contributions, error } = await getSupabaseClient()
       .from('contributions')
       .select(`
         *,
         funding:fundings(*)
       `)
-      .ilike('contributor_name', `%${contributorEmail}%`);
+      .eq('contributor_id', userId);
 
     if (error) return [];
 

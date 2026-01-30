@@ -21,7 +21,7 @@ export const generateId = () => storage.generateId();
 export const saveFunding = (funding: Parameters<typeof storage.saveFunding>[0]) => storage.saveFunding(funding);
 export const getFunding = (id: string) => storage.getFunding(id);
 export const getAllFundings = () => storage.getAllFundings();
-export const addContribution = (contribution: Parameters<typeof storage.addContribution>[0]) => storage.addContribution(contribution);
+export const addContribution = (contribution: Parameters<typeof storage.addContribution>[0], userId?: string) => storage.addContribution(contribution, userId);
 export const getContributions = (fundingId: string) => storage.getContributions(fundingId);
 export const getFundingsByHost = (hostId: string) => storage.getFundingsByHost(hostId);
 export const getFundingsByContributor = (contributorEmail: string) => storage.getFundingsByContributor(contributorEmail);

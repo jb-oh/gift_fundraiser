@@ -20,6 +20,7 @@ export interface IStorage {
   getFundingsByContributor(contributorEmail: string): Promise<{ funding: Funding; contribution: Contribution }[]> | { funding: Funding; contribution: Contribution }[];
 
   // Contribution operations
-  addContribution(contribution: Contribution): Promise<void> | void;
+  // userId is optional - pass authenticated user's ID when available for tracking
+  addContribution(contribution: Contribution, userId?: string): Promise<void> | void;
   getContributions(fundingId: string): Promise<Contribution[]> | Contribution[];
 }
