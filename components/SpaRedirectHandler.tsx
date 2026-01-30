@@ -27,8 +27,9 @@ export default function SpaRedirectHandler() {
       url.search = '';
       window.history.replaceState({}, '', url.toString());
 
-      // Navigate to the intended route
-      router.replace(redirectPath);
+      // Ensure path starts with / to avoid relative path issues
+      const normalizedPath = redirectPath.startsWith('/') ? redirectPath : '/' + redirectPath;
+      router.replace(normalizedPath);
     }
   }, [router]);
 
