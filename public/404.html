@@ -26,8 +26,8 @@
         .slice(0, 1 + pathSegmentsToKeep)
         .join('/') + '/';
 
-      // Store the path (everything after basePath) in sessionStorage
-      var route = l.pathname.slice(path.length - 1);
+      // Extract the route (everything after basePath) with leading slash
+      var route = '/' + l.pathname.slice(path.length);
 
       // Redirect to index.html with the route preserved
       l.replace(
